@@ -1,6 +1,8 @@
 package com.demo.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Entity(name = "cardbins")
+@Entity
+@Table(name = "cardbin")
 public class Cardbin {
 
     @Id
@@ -19,10 +22,11 @@ public class Cardbin {
     @NonNull
     private int binNumber;
     @NotEmpty
-    @NonNull
+//    @NonNull
     private String binType;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cardbin")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cardbin", fetch = FetchType.LAZY)
     private List<Attribute> attributes;
 
     @NotEmpty

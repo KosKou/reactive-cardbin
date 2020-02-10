@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,22 +35,27 @@ public class AttributeServiceImpl implements AttributeService{
 
     private Single<Integer> saveAttributeToRepository(AddAttributeRequest addAttributeRequest){
         return Single.create(singleEmitter -> {
-            Optional<Cardbin> optionalAttribute = cardbinRepository.findById(addAttributeRequest.getCardbinId());
-            if (!optionalAttribute.isPresent()){
+            Optional<Cardbin> optionalCardbin = cardbinRepository.findById(addAttributeRequest.getCardbinId());
+            if (!optionalCardbin.isPresent()){
                 singleEmitter.onError(new EntityNotFoundException());
             }else {
-                Integer addedAttributeId = attributeRepository.save(toAttribute(addAttributeRequest)).getId();
+                Integer addedAttributeId = attributeRepository
+                        .save(toAttribute(addAttributeRequest)).getId();
             }
         });
     }
 
     private Attribute toAttribute(AddAttributeRequest addAttributeRequest){
         Attribute attribute = new Attribute();
+//        List<Attribute> attributes = new ArrayList<Attribute>();
+//        cardbin.setAttributes(attributes);
         BeanUtils.copyProperties(addAttributeRequest, attribute);
         attribute.setState("ACTIVE");
+//        attribute.setCardbin(cardbin);
         attribute.setCardbin(Cardbin.builder()
             .id(addAttributeRequest.getCardbinId())
             .build());
+//        attribute.getCardbin().setBinType("TEST");
         return attribute;
     }
 

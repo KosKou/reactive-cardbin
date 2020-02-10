@@ -9,7 +9,8 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Entity(name = "attributes")
+@Entity
+@Table(name = "attributes")
 public class Attribute {
 
     @Id
@@ -26,7 +27,8 @@ public class Attribute {
     @Setter
     private String state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "cardbin_id")
     private Cardbin cardbin;
 
 }
