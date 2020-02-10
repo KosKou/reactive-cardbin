@@ -45,6 +45,10 @@ public class AttributeServiceImpl implements AttributeService{
         });
     }
 
+    private String hehe(String up){
+        return (up.equals("HAHA") ? "KK" : "LL");
+    }
+
     private Attribute toAttribute(AddAttributeRequest addAttributeRequest){
         Attribute attribute = new Attribute();
 //        List<Attribute> attributes = new ArrayList<Attribute>();

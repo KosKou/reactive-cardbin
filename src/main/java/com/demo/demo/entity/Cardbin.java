@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Entity
-@Table(name = "cardbin")
+@Table(name = "cardbins")
 public class Cardbin {
 
     @Id
