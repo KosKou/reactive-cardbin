@@ -8,10 +8,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -26,7 +23,8 @@ public class CardbinRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Single<ResponseEntity<BaseWebResponse>> addCardbin(@RequestBody AddCardbinRequest addCardbinRequest){
+    public Single<ResponseEntity<BaseWebResponse>> addCardbin(
+            @RequestBody AddCardbinRequest addCardbinRequest){
         return cardbinService.addCardbin(addCardbinRequest)
                 .subscribeOn(Schedulers.io())
                 .map(s -> ResponseEntity

@@ -25,9 +25,9 @@ public class Cardbin {
 //    @NonNull
     private String binType;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cardbin", fetch = FetchType.LAZY)
-    private List<Attribute> attributes;
+//    @JsonIgnore
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cardbin", fetch = FetchType.LAZY)
+//    private List<Attribute> attributes;
 
     @NotEmpty
     private String state;

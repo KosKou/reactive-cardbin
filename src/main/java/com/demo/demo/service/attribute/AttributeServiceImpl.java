@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,25 +40,18 @@ public class AttributeServiceImpl implements AttributeService{
             }else {
                 Integer addedAttributeId = attributeRepository
                         .save(toAttribute(addAttributeRequest)).getId();
+                singleEmitter.onSuccess(addedAttributeId);
             }
         });
     }
 
-    private String hehe(String up){
-        return (up.equals("HAHA") ? "KK" : "LL");
-    }
-
     private Attribute toAttribute(AddAttributeRequest addAttributeRequest){
         Attribute attribute = new Attribute();
-//        List<Attribute> attributes = new ArrayList<Attribute>();
-//        cardbin.setAttributes(attributes);
         BeanUtils.copyProperties(addAttributeRequest, attribute);
         attribute.setState("ACTIVE");
-//        attribute.setCardbin(cardbin);
         attribute.setCardbin(Cardbin.builder()
             .id(addAttributeRequest.getCardbinId())
             .build());
-//        attribute.getCardbin().setBinType("TEST");
         return attribute;
     }
 
@@ -113,7 +105,7 @@ public class AttributeServiceImpl implements AttributeService{
 
     @Override
     public Single<AttributeResponse> getAttributeDetail(int id) {
-        return null;
+        return getAttributeDetailInRepository(id);
     }
 
     private Single<AttributeResponse> getAttributeDetailInRepository(int id){
