@@ -11,6 +11,7 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,6 @@ public class AttributeServiceImpl implements AttributeService{
 
     private final AttributeRepository attributeRepository;
     private final CardbinRepository cardbinRepository;
-
 
     @Override
     public Single<Integer> addAttribute(AddAttributeRequest addAttributeRequest) {

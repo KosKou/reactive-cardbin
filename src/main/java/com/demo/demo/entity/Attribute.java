@@ -28,7 +28,7 @@ public class Attribute {
     private String state;
 
     @ManyToOne
-    @JoinColumn(name = "cardbin_id")
+//    @JoinColumn(name = "cardbin_id")
     private Cardbin cardbin;
 
 }
