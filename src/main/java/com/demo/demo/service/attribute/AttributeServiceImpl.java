@@ -7,12 +7,14 @@ import com.demo.demo.repository.CardbinRepository;
 import com.demo.demo.servicedto.request.AddAttributeRequest;
 import com.demo.demo.servicedto.request.UpdateAttributeRequest;
 import com.demo.demo.servicedto.response.AttributeResponse;
+import com.demo.demo.webdto.request.UpdateAttributeWebRequest;
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -28,11 +30,25 @@ public class AttributeServiceImpl implements AttributeService{
     private final CardbinRepository cardbinRepository;
 
     @Override
-    public Single<Integer> addAttribute(AddAttributeRequest addAttributeRequest) {
-        return saveAttributeToRepository(addAttributeRequest);
+    public Single addAttribute(AddAttributeRequest addAttributeRequest) {
+        return addAttributeToRepository(addAttributeRequest);
     }
 
-    private Single<Integer> saveAttributeToRepository(AddAttributeRequest addAttributeRequest){
+    //TODO: Think about a better method name
+//    private Maybe refactoringSaveTry(Integer id, Attribute data, JpaRepository validate, JpaRepository action){
+//        return Maybe.fromCallable(() -> validate.getOne(id))
+//                .switchIfEmpty(Single.error(new EntityNotFoundException()))
+//                .map(s -> action.save(data))
+//                .toMaybe();
+//    }
+
+
+    private Single<Integer> addAttributeToRepository(AddAttributeRequest addAttributeRequest){
+        //TODO: Processing
+//        return refactoringSaveTry(addAttributeRequest.getCardbinId(),
+//                toAttribute(addAttributeRequest),
+//                cardbinRepository,
+//                attributeRepository).toSingle();
         return Single.create(singleEmitter -> {
             Optional<Cardbin> optionalCardbin = cardbinRepository.findById(addAttributeRequest.getCardbinId());
             if (!optionalCardbin.isPresent()){
@@ -46,21 +62,41 @@ public class AttributeServiceImpl implements AttributeService{
     }
 
     private Attribute toAttribute(AddAttributeRequest addAttributeRequest){
-        Attribute attribute = new Attribute();
-        BeanUtils.copyProperties(addAttributeRequest, attribute);
-        attribute.setState("ACTIVE");
-        attribute.setCardbin(Cardbin.builder()
-            .id(addAttributeRequest.getCardbinId())
-            .build());
-        return attribute;
+        return Attribute.builder()
+                .key(addAttributeRequest.getKey())
+                .value(addAttributeRequest.getValue())
+                .state("ACTIVE")
+                .cardbin(Cardbin.builder()
+                        .id(addAttributeRequest.getCardbinId())
+                        .build()
+                ).build();
     }
 
     @Override
-    public Completable updateAttribute(UpdateAttributeRequest updateAttributeRequest) {
-        return updateAttributeRepository(updateAttributeRequest);
+    public Completable updateAttribute(UpdateAttributeWebRequest updateAttributeWebRequest, Integer attributeId) {
+        return updateAttributeRepository(toUpdateAttributeRequest(updateAttributeWebRequest, attributeId));
+    }
+
+    private UpdateAttributeRequest toUpdateAttributeRequest(UpdateAttributeWebRequest updateAttributeWebRequest
+            , Integer attributeId){
+        return UpdateAttributeRequest.builder()
+                .key(updateAttributeWebRequest.getKey())
+                .value(updateAttributeWebRequest.getValue())
+                .id(attributeId)
+                .build();
     }
 
     private Completable updateAttributeRepository(UpdateAttributeRequest updateAttributeRequest){
+        //TODO: Processing
+//        return refactoringSaveTry(updateAttributeRequest.getId(), Attribute.builder()
+//                .id(updateAttributeRequest.getId())
+//                .key(updateAttributeRequest.getKey())
+//                .value(updateAttributeRequest.getValue())
+//                .build(),
+//                attributeRepository,
+//                attributeRepository)
+//                .ignoreElement();
+
         return Completable.create(completableEmitter -> {
             Optional<Attribute> optionalAttribute = attributeRepository.findById(updateAttributeRequest.getId());
             if (!optionalAttribute.isPresent()){
@@ -97,10 +133,13 @@ public class AttributeServiceImpl implements AttributeService{
     }
 
     private AttributeResponse toAttributeResponse(Attribute attribute){
-        AttributeResponse attributeResponse = new AttributeResponse();
-        BeanUtils.copyProperties(attribute, attributeResponse);
-        attributeResponse.setBinType(attribute.getCardbin().getBinType());
-        return attributeResponse;
+        return AttributeResponse.builder()
+                .id(attribute.getId())
+                .key(attribute.getKey())
+                .value(attribute.getValue())
+                .state(attribute.getState())
+                .binType(attribute.getCardbin().getBinType())
+                .build();
     }
 
     @Override
@@ -124,7 +163,6 @@ public class AttributeServiceImpl implements AttributeService{
     public Completable deleteAttribute(int id, String delType) {
         return deleteAttributeInRepository(id, delType);
     }
-    //TODO: Check if this shit works or not
     private Completable deleteAttributeInRepository(int id, String delType){
         return Completable.create(completableEmitter -> {
             Optional<Attribute> optionalAttribute = attributeRepository.findById(id);

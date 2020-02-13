@@ -4,6 +4,7 @@ import com.demo.demo.entity.Attribute;
 import com.demo.demo.entity.Cardbin;
 import com.demo.demo.servicedto.request.AddCardbinRequest;
 import com.demo.demo.servicedto.request.UpdateCardbinRequest;
+import com.demo.demo.webdto.request.UpdateCardbinWebRequest;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -19,7 +20,8 @@ public interface CardbinService {
 
     Observable<List<Attribute>> getCardbinAttributes(Integer id);
 
-    Completable updateCardbin(UpdateCardbinRequest updateCardbinRequest);
+//    Completable updateCardbin(UpdateCardbinRequest updateCardbinRequest);
+    Completable updateCardbin(UpdateCardbinWebRequest updateCardbinWebRequest, Integer cardbinId);
 
     Completable deleteCardbin(Integer id);
 }

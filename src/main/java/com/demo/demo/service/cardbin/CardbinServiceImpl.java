@@ -6,6 +6,7 @@ import com.demo.demo.repository.AttributeRepository;
 import com.demo.demo.repository.CardbinRepository;
 import com.demo.demo.servicedto.request.AddCardbinRequest;
 import com.demo.demo.servicedto.request.UpdateCardbinRequest;
+import com.demo.demo.webdto.request.UpdateCardbinWebRequest;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -38,9 +39,12 @@ public class CardbinServiceImpl implements CardbinService {
     }
 
     @Override
-    public Completable updateCardbin(UpdateCardbinRequest updateCardbinRequest) {
+    public Completable updateCardbin(UpdateCardbinWebRequest updateCardbinWebRequest, Integer cardbinId) {
         return Completable.create(completableEmitter -> {
-           Optional<Cardbin> optionalCardbin = cardbinRepository.findById(updateCardbinRequest.getId());
+            UpdateCardbinRequest updateCardbinRequest =
+                    toCardbinRequest(updateCardbinWebRequest, cardbinId);
+            Optional<Cardbin> optionalCardbin = cardbinRepository
+                   .findById(updateCardbinRequest.getId());
            if (!optionalCardbin.isPresent()){
                completableEmitter.onError(new EntityNotFoundException());
            }else {
@@ -51,6 +55,13 @@ public class CardbinServiceImpl implements CardbinService {
                completableEmitter.onComplete();
            }
         });
+    }
+
+    private UpdateCardbinRequest toCardbinRequest(UpdateCardbinWebRequest updateCardbinWebRequest, Integer cardbinId){
+        UpdateCardbinRequest updateCardbinRequest = new UpdateCardbinRequest();
+        BeanUtils.copyProperties(updateCardbinWebRequest, updateCardbinRequest);
+        updateCardbinRequest.setId(cardbinId);
+        return updateCardbinRequest;
     }
 
     @Override
